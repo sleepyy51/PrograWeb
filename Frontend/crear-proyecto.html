@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Proyecto | Panel de Control</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <main class="screen screen-light">
+        <header class="brand-bar">
+            <a class="institution-logo" href="panel.html" aria-label="Panel de control">
+                <img src="img/logo.png" alt="Instituto Tecnológico de La Laguna">
+            </a>
+            <h1>Panel de Control</h1>
+        </header>
+        <article class="form-card">
+            <h2>Nuevo Proyecto</h2>
+            <form class="project-form">
+                <div class="form-row"><span class="field-icon" aria-hidden="true">USR</span><label class="sr-only" for="nombre-persona">Nombre de la persona</label><input id="nombre-persona" name="nombre_persona" type="text" placeholder="Nombre de la persona" required></div>
+                <div class="form-row"><span class="field-icon" aria-hidden="true">COD</span><label class="sr-only" for="codigo">Código</label><input id="codigo" name="codigo" type="text" placeholder="Código del proyecto" required></div>
+                <div class="form-row"><span class="field-icon" aria-hidden="true">CAL</span><label class="sr-only" for="fecha-ingreso">Fecha de ingreso</label><input id="fecha-ingreso" name="fecha_ingreso" type="date" required></div>
+                <div class="form-row"><span class="field-icon" aria-hidden="true">EDU</span><label class="sr-only" for="nombre-proyecto">Nombre del proyecto</label><input id="nombre-proyecto" name="nombre_proyecto" type="text" placeholder="Nombre del proyecto" required></div>
+                <div class="form-row"><span class="field-icon" aria-hidden="true">CAL</span><label class="sr-only" for="fecha-terminado">Fecha de terminado</label><input id="fecha-terminado" name="fecha_terminado" type="date"></div>
+                <p class="payment-label">Pago de registro: <strong data-paypal-amount>Cargando...</strong></p>
+                <div id="paypal-button-container"></div>
+                <p class="payment-status" data-payment-status>Completa el pago para habilitar el guardado.</p>
+                <p class="form-error" data-error hidden></p>
+                <div class="form-actions"><a class="button button-outline" data-cancelar href="panel.html">Cancelar</a><button class="button button-primary" data-save-project type="submit" disabled>Guardar proyecto</button></div>
+            </form>
+        </article>
+    </main>
+    <script src="js/app.js"></script>
+</body>
+</html>

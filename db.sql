@@ -46,9 +46,13 @@ CREATE TABLE IF NOT EXISTS proyectos (
   fecha_ingreso DATE NOT NULL,
   nombre_proyecto VARCHAR(220) NOT NULL,
   fecha_terminado DATE NULL,
+  pago_estado ENUM('pendiente', 'pagado') NOT NULL DEFAULT 'pendiente',
+  paypal_order_id VARCHAR(100) NULL,
+  pagado_en TIMESTAMP NULL,
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_proyectos_codigo (codigo),
+  UNIQUE KEY uq_proyectos_paypal_order (paypal_order_id),
   KEY ix_proyectos_convocatoria (convocatoria_id),
   CONSTRAINT fk_proyectos_convocatoria
     FOREIGN KEY (convocatoria_id) REFERENCES convocatorias(id)
