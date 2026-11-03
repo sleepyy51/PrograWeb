@@ -136,6 +136,65 @@ function paypalRequest($metodo, $ruta, $cuerpo = null)
     return $datos;
 }
 
+function pdfTexto($texto)
+{
+    $texto = iconv('UTF-8', 'Windows-1252//TRANSLIT', (string) $texto);
+    return str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], $texto);
+}
+
+function enviarReciboPdf($proyecto)
+{
+    $lineas = [
+        'RECIBO DE PAGO',
+        'Comision Discriminadora',
+        '',
+        'Proyecto: ' . $proyecto['nombre_proyecto'],
+        'Codigo: ' . $proyecto['codigo'],
+        'Persona: ' . $proyecto['nombre_persona'],
+        'Convocatoria: ' . $proyecto['convocatoria'],
+        'Fecha de pago: ' . $proyecto['pagado_en'],
+        'Orden PayPal: ' . $proyecto['paypal_order_id'],
+        'Monto: ' . ($proyecto['monto_pago'] ?: 'Consultar') . ' ' . ($proyecto['moneda_pago'] ?: ''),
+        '',
+        'Estado: PAGADO',
+    ];
+    $contenido = "BT\n/F1 16 Tf\n";
+    $y = 760;
+    foreach ($lineas as $indice => $linea) {
+        $contenido .= sprintf("1 0 0 1 60 %d Tm (%s) Tj\n", $y, pdfTexto($linea));
+        $contenido .= $indice === 0 ? "/F1 16 Tf\n" : "/F1 11 Tf\n";
+        $y -= 30;
+    }
+    $contenido .= "ET";
+
+    $objetos = [
+        '<< /Type /Catalog /Pages 2 0 R >>',
+        '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+        '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+        '<< /Length ' . strlen($contenido) . " >>\nstream\n" . $contenido . "\nendstream",
+        '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    ];
+    $pdf = "%PDF-1.4\n";
+    $offsets = [0];
+    foreach ($objetos as $numero => $objeto) {
+        $offsets[$numero + 1] = strlen($pdf);
+        $pdf .= ($numero + 1) . " 0 obj\n" . $objeto . "\nendobj\n";
+    }
+    $xref = strlen($pdf);
+    $pdf .= "xref\n0 " . (count($objetos) + 1) . "\n0000000000 65535 f \n";
+    for ($i = 1; $i <= count($objetos); $i++) {
+        $pdf .= sprintf("%010d 00000 n \n", $offsets[$i]);
+    }
+    $pdf .= "trailer\n<< /Size " . (count($objetos) + 1) . " /Root 1 0 R >>\nstartxref\n" . $xref . "\n%%EOF";
+
+    header_remove('Content-Type');
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="recibo-pago-' . (int) $proyecto['id'] . '.pdf"');
+    header('Content-Length: ' . strlen($pdf));
+    echo $pdf;
+    exit;
+}
+
 $accion = $_GET['accion'] ?? '';
 $conexion = null;
 
@@ -293,7 +352,8 @@ try {
 
         $stmt = mysqli_prepare(
             $conexion,
-            'SELECT nombre_persona, codigo, fecha_ingreso, nombre_proyecto, fecha_terminado
+            'SELECT id, nombre_persona, codigo, fecha_ingreso, nombre_proyecto, fecha_terminado,
+                    pago_estado
              FROM proyectos WHERE convocatoria_id = ? ORDER BY fecha_ingreso, id'
         );
         mysqli_stmt_bind_param($stmt, 'i', $id);
@@ -306,6 +366,33 @@ try {
         mysqli_stmt_close($stmt);
 
         responder(['ok' => true, 'convocatoria' => $convocatoria, 'proyectos' => $proyectos]);
+    }
+
+    if ($accion === 'recibo') {
+        $proyectoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$proyectoId) {
+            responder(['ok' => false, 'mensaje' => 'Proyecto inválido.'], 422);
+        }
+        $stmt = mysqli_prepare(
+            $conexion,
+            'SELECT p.id, p.nombre_proyecto, p.codigo, p.nombre_persona, p.pago_estado,
+                    p.paypal_order_id, p.pagado_en, c.nombre AS convocatoria,
+                    ? AS monto_pago, ? AS moneda_pago
+             FROM proyectos p
+             JOIN convocatorias c ON c.id = p.convocatoria_id
+             WHERE p.id = ?'
+        );
+        $monto = getenv('PAYPAL_AMOUNT') ?: '1.00';
+        $moneda = getenv('PAYPAL_CURRENCY') ?: 'USD';
+        mysqli_stmt_bind_param($stmt, 'ssi', $monto, $moneda, $proyectoId);
+        mysqli_stmt_execute($stmt);
+        $proyecto = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$proyecto || $proyecto['pago_estado'] !== 'pagado') {
+            responder(['ok' => false, 'mensaje' => 'El recibo solo está disponible para pagos completados.'], 404);
+        }
+        enviarReciboPdf($proyecto);
     }
 
     if ($accion === 'crear-convocatoria' && $_SERVER['REQUEST_METHOD'] === 'POST') {

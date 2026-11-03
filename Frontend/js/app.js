@@ -109,6 +109,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td data-label="Fecha ingreso">${fecha(item.fecha_ingreso)}</td>
                 <td data-label="Nombre proyecto">${html(item.nombre_proyecto)}</td>
                 <td data-label="Fecha terminado">${fecha(item.fecha_terminado)}</td>
+                <td data-label="Recibo">${item.pago_estado === 'pagado'
+                    ? `<a href="${API}?accion=recibo&id=${encodeURIComponent(item.id)}">PDF</a>`
+                    : 'Pendiente'}</td>
             </tr>`).join('');
         const nuevoProyecto = detalle.querySelector('[data-nuevo-proyecto]');
         nuevoProyecto.href = `crear-proyecto.html?convocatoria_id=${encodeURIComponent(id)}`;
@@ -163,7 +166,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             datos.set('convocatoria_id', convocatoriaId);
             datos.set('paypal_order_id', paypalOrderId);
             try {
-                await request('crear-proyecto', { method: 'POST', body: datos });
+                const proyecto = await request('crear-proyecto', { method: 'POST', body: datos });
+                window.open(`${API}?accion=recibo&id=${encodeURIComponent(proyecto.id)}`, '_blank');
                 window.location.href = `examinar-convocatoria.html?id=${encodeURIComponent(convocatoriaId)}`;
             } catch (exception) {
                 mostrarError(error, exception);
