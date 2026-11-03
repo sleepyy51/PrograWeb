@@ -19,14 +19,16 @@
         </header>
         <div class="login-card">
             <h1>Comisión Discriminadora</h1>
-            <form class="login-form" action="panel.html" method="get">
+            <form class="login-form">
                 <label for="usuario">Usuario</label>
                 <input id="usuario" name="usuario" type="text" autocomplete="username" required>
                 <label for="contrasena">Contraseña</label>
                 <input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required>
+                <p class="form-error" data-error hidden></p>
                 <button class="button button-primary" type="submit">Entrar</button>
             </form>
         </div>
     </main>
+    <script src="js/app.js"></script>
 </body>
 </html>

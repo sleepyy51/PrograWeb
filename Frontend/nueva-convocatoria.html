@@ -20,14 +20,16 @@
         </header>
         <article class="form-card">
             <h2>Nueva Convocatoria</h2>
-            <form class="convocation-form" action="confirmacion.html" method="get">
+            <form class="convocation-form">
                 <div class="form-row"><span class="field-icon" aria-hidden="true">EDU</span><label class="sr-only" for="nombre-convocatoria">Nombre Convocatoria</label><input id="nombre-convocatoria" name="nombre" type="text" placeholder="Nombre Convocatoria" required></div>
                 <div class="form-row"><span class="field-icon" aria-hidden="true">GRP</span><label class="sr-only" for="tipo-convocatoria">Tipo de convocatoria</label><select id="tipo-convocatoria" name="tipo" required><option value="">Tipo de convocatoria</option><option>Académica</option><option>Investigación</option><option>Servicio institucional</option></select></div>
-                <div class="form-row period-row"><span class="field-icon" aria-hidden="true">CAL</span><fieldset><legend>Periodo</legend><div class="date-fields"><label class="sr-only" for="fecha-inicio">Fecha de inicio</label><input id="fecha-inicio" name="inicio" type="text" placeholder="DD/MM/AAAA" required><span aria-hidden="true">-</span><label class="sr-only" for="fecha-fin">Fecha de finalización</label><input id="fecha-fin" name="fin" type="text" placeholder="DD/MM/AAAA" required></div></fieldset></div>
+                <div class="form-row period-row"><span class="field-icon" aria-hidden="true">CAL</span><fieldset><legend>Periodo</legend><div class="date-fields"><label class="sr-only" for="fecha-inicio">Fecha de inicio</label><input id="fecha-inicio" name="inicio" type="date" required><span aria-hidden="true">-</span><label class="sr-only" for="fecha-fin">Fecha de finalización</label><input id="fecha-fin" name="fin" type="date" required></div></fieldset></div>
                 <div class="form-row"><span class="field-icon" aria-hidden="true">USR</span><label class="sr-only" for="claves">Claves</label><input id="claves" name="claves" type="text" placeholder="Claves de registro (ej. INV-2026)" required></div>
+                <p class="form-error" data-error hidden></p>
                 <div class="form-actions"><a class="button button-outline" href="panel.html">Cancelar</a><button class="button button-primary" type="submit">Aceptar</button></div>
             </form>
         </article>
     </main>
+    <script src="js/app.js"></script>
 </body>
 </html>

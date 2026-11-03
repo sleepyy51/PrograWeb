@@ -115,6 +115,11 @@ a {
     flex-direction: column;
 }
 
+.form-error {
+    color: #a32121;
+    margin: .8rem 0 0;
+}
+
 .login-form label {
     margin-bottom: .6rem;
     font-size: 1.7rem;

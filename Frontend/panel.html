@@ -22,7 +22,7 @@
             <a class="button button-primary" href="nueva-convocatoria.html">Nueva Convocatoria</a>
             <div class="toolbar-actions">
                 <a class="button button-primary" href="examinar-convocatoria.html">Filtrar</a>
-                <a class="button button-primary" href="panel.html">Exportar&nbsp; CSV</a>
+                <a class="button button-primary" href="../Backend/api.php?accion=exportar">Exportar&nbsp; CSV</a>
             </div>
         </div>
         <hr class="section-rule">
@@ -31,7 +31,7 @@
             <div class="table-scroll">
                 <table class="convocation-table">
                     <thead><tr><th></th><th>Año de Convocatoria</th><th>Fecha Creada</th><th>Responsable</th></tr></thead>
-                    <tbody>
+                    <tbody data-convocatorias>
                         <tr><td data-label="Examinar"><a class="check-link" href="examinar-convocatoria.html" aria-label="Examinar convocatoria 2026">✓</a></td><td data-label="Convocatoria">Convocatoria de Innovación 2026</td><td data-label="Fecha creada">12 - 05 - 2026</td><td data-label="Responsable">Juan Carlos Herrera</td></tr>
                         <tr><td data-label="Examinar"><a class="check-link" href="examinar-convocatoria.html" aria-label="Examinar convocatoria 2025">✓</a></td><td data-label="Convocatoria">Programa de Becas 2025</td><td data-label="Fecha creada">23 - 01 - 2025</td><td data-label="Responsable">María Sánchez</td></tr>
                         <tr><td data-label="Examinar"><a class="check-link" href="examinar-convocatoria.html" aria-label="Examinar convocatoria de investigación">✓</a></td><td data-label="Convocatoria">Proyectos de Investigación Aplicada</td><td data-label="Fecha creada">18 - 11 - 2024</td><td data-label="Responsable">Laura Méndez</td></tr>
@@ -47,7 +47,8 @@
                 <span class="pagination-buttons"><button type="button" aria-label="Página anterior">‹</button><button type="button" aria-label="Página siguiente">›</button></span>
             </div>
         </article>
-        <a class="button button-primary button-session" href="index.html">Cerrar sesión</a>
+        <a class="button button-primary button-session" href="index.html" data-logout>Cerrar sesión</a>
     </main>
+    <script src="js/app.js"></script>
 </body>
 </html>
